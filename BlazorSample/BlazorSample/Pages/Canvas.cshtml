@@ -1,0 +1,43 @@
+﻿@page "/canvas"
+@using System.Threading;
+@using Blazor.Extensions;
+
+<h1>Canvas demo!!!</h1>
+
+<BECanvas Height="600" Width="800" ref="@_canvasReference"></BECanvas>
+
+@functions{
+    private Canvas2dContext _context;
+    int Ax = 0;
+    protected BECanvas _canvasReference;
+
+    protected override void OnAfterRender()
+    {
+        this._context = this._canvasReference.CreateCanvas2d();
+        this._context.FillStyle = "green";
+        var timer = new Timer(TimeCallBack, null, 1000, 500);
+
+    }
+    void TimeCallBack(object state)
+    {
+
+
+        Ax += 2;
+
+        this._context.ClearRect(0, 0, 800, 600);
+        this._context.FillRect(10 + Ax, 100, 100, 100);
+
+
+        this._context.Font = "48px serif";
+        this._context.StrokeText("Hello Blazor!!!", 10, 100);
+        if (Ax > 300)
+        {
+            Ax = 0;
+
+        }
+
+
+    }
+
+
+}

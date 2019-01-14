@@ -1,0 +1,18 @@
+﻿@page "/notification"
+
+@using Blazor.Extensions;
+@inject INotificationService NotificationService
+
+<h1>Test Notification</h1>
+<button id="BtnTest" onclick="@Test">Test Notif</button>
+@functions{
+    async void Test()
+    {
+        bool IsSupportedByBrowser = await NotificationService.IsSupportedByBrowserAsync();
+        if (IsSupportedByBrowser)
+        {
+            PermissionType permission = await NotificationService.RequestPermissionAsync();
+            await NotificationService.CreateAsync("Test dari Blazor","Ini datang dari blazor","");
+        }
+    }
+}

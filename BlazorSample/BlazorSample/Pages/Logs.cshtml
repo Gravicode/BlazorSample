@@ -1,0 +1,14 @@
+﻿@page "/Logs"
+@using Microsoft.Extensions.Logging;
+
+@inject ILogger<Logs> logger
+
+<h1>Log Sample</h1>
+<button id="BtnLog" onclick="@TestLog">Test Log</button>
+@functions {
+  
+    void TestLog()
+    {
+        logger.LogDebug("Insert to log...");
+    }
+}

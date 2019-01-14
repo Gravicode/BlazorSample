@@ -1,0 +1,43 @@
+﻿@page "/chat"
+@using Blazor.Extensions;
+
+<div class="container">
+    Nama :
+    <input type="text" id="namatxt" class="form-control" bind="@Nama" />
+    Message :
+    <input type="text" id="messagetxt" class="form-control" bind="@Message" />
+    <input type="button" id="sendMessage" value="Send" class="btn btn-primary" onclick="@SendMessage" />
+    <ul id="discussion">
+        @foreach (var message in messages)
+        {
+            <li>@message</li>
+        }
+    </ul>
+</div>
+
+@functions {
+HubConnection connection;
+string Message = "";
+public string Nama { get; set; } = "Asep";
+IList<string> messages = new List<string>();
+
+protected override async Task OnInitAsync()
+{
+    connection = new HubConnectionBuilder().WithUrl("http://localhost:64149/chathub").Build();
+    connection.On<string, string>("broadcastMessage", this.OnBroadcastMessage);
+    await connection.StartAsync();
+}
+
+Task OnBroadcastMessage(string name, string message)
+{
+    messages.Add(name + " : " + message);
+    StateHasChanged();
+    return Task.CompletedTask;
+}
+
+async Task SendMessage()
+{
+    await connection.InvokeAsync("Send", Nama, Message);
+    Message = "";
+}
+}
